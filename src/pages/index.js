@@ -1,10 +1,101 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '@/styles/Home.module.css'
+import { Web3Button } from "@web3modal/react";
+import Link from 'next/link';
+import abi from '../utils/lottery_abi.json';
+import usdcAbi from '../utils/usdc_abi.json';
+import { ethers, Signer } from 'ethers';
+import { useAccount } from 'wagmi';
+import { useSigner } from 'wagmi';
+import { useState } from "react";
 
 
 
 export default function Home() {
+
+  const contractAddress = "0xAEC776Bb705EF04E065BD6390Cd90713746de4Cd";
+  const usdcAddress = "0x07865c6E87B9F70255377e024ace6630C1Eaa37F";
+  const { address, isConnected } = useAccount();
+  const { data: signer, isError, isLoading } = useSigner();
+  const [players, setPlayers] = useState([]);
+  const [winners, setWinners] = useState([]);
+  const [winnerHash, setWinnerHash] = useState();
+  const admin = "0x71c9F24326DeBC92F913059207957c27AF56a73D";
+
+  const enterLottery = async () => {
+    try{
+      const usdcContract = new ethers.Contract(usdcAddress, usdcAbi, signer);
+      const approve = await usdcContract.approve(contractAddress, 1000000);
+      await approve.wait();
+      alert('approved! wait to enter lottery');
+
+      // implement enter Lottery;
+
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+      const _enterLottery = await contract.enterLottery();
+      await _enterLottery.wait();
+      alert(`Done: ${_enterLottery.hash}`);
+
+      
+  
+    }
+    catch(err) {
+      alert(err.message);
+    }
+  }
+
+  const getPlayers = async () => {
+    try{
+      if(signer) {
+        
+        const contract = new ethers.Contract(contractAddress, abi, signer);
+        const seePlayers = await contract.seePlayers();
+        setPlayers(seePlayers);
+      } else{
+        alert("please connect wallet");
+       
+      }
+    }
+    catch(err) {
+      alert(err.message);
+    }
+
+  }
+
+  const getWinners = async () => {
+    try{
+      if(!signer) {
+        alert("please connect wallet");
+      } else{
+     
+        const contract = new ethers.Contract(contractAddress, abi, signer);
+        const seeWinners = await contract.seeWinners();
+        setWinners(seeWinners);
+      }
+    }
+    catch(err) {
+      alert(err.message);
+    }
+
+  }
+
+  const pickWinner = async () => {
+    try{
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+      const pickWinner = await contract.pickWinner();
+      await pickWinner.wait();
+      setWinnerHash(pickWinner.hash);
+      alert(`Done: ${pickWinner.hash}`);
+    }
+    catch(err) {
+
+    }
+  }
+
+
+
+
   return (
     <>
       <Head>
@@ -14,24 +105,86 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-          <div className={styles.landing}>
+          <div id="/" className={styles.landing}>
             <div className={styles.navbar}>
               <h1>LotteryDApp</h1>
               <ul>
-                <li>Home</li>
-                <li>Players</li>
-                <li>Lottery History</li>
+                <Link href="#/" scroll={false}>Home</Link>
+                <Link href="#players" scroll={false}>Players</Link>
+                <Link href="#history" scroll={false}>Lottery History</Link>
               </ul>
-              <button>Connect Wallet</button>
+              <Web3Button/>
             </div>
 
             <div className={styles.center}>
               <h1>Enter Lottery and Win</h1>
               <h3>With just 10 USDC, you stand a chance of winning $90 and other cool prizes</h3>
-              <button>Get Started!</button>
+              <Link href='#players'><button>Get Started!</button></Link>
             </div>
             
           </div>
+
+            {/* Enter lottery and players section */}
+
+            <div id="players" className={styles.play_section}>
+              <div className={styles.enter_part}>
+                <p>Enter Lottery Here</p>
+
+                {
+                  (players.length <=9) ? <h2>Lottery Open, please join</h2> : <h2>Lottery closed, wait for new round</h2>
+                }
+                  <button onClick={enterLottery}>Enter!</button>
+              </div>
+
+              <div>
+                <div className={styles.player_top}>
+                  <h3>Players</h3>
+                  <button onClick={getPlayers} className={styles.player_btn}>See players</button>
+                </div>
+                
+                  {
+                    players.map((res) => (
+                      <>
+                        <p className={styles.player}>{res}</p>
+                      </>
+                      
+                    ))
+                  }
+                  {
+                    (address == admin)?<button onClick={pickWinner} className={styles.picker}>Pick Winner</button> : null
+                  }
+                  
+              </div>
+
+            </div>
+
+            {/* Lottery history section */}
+            <div  id="history" className={styles.history}>
+              <div>
+                <div className={styles.history_top}>
+                  <h2>Lottery History</h2>
+                  <button onClick={getWinners}>See winners</button>
+                </div>
+                 
+                      {
+                        winners.map((res) => (
+                          <div key={res.id} >
+                            <p className={styles.winner}>{(res.id).toString()}:  {(res.winner).toString()} </p>
+                          </div>
+                        ))
+                      }
+              </div>
+          
+            </div>
+
+            {/* Footer section */}
+            <div className={styles.footer}>
+                <a href='#'> &copy; 2023</a>
+                <a href='https://github.com/nwizu033'>Github</a>
+                <a href='https://twitter.com/chinwizu'>Twitter</a>
+                <a href='https://www.linkedin.com/in/chinwizu-ekwe-144518159/'>LinkedIn</a>
+                
+            </div>
       </main>
     </>
   )

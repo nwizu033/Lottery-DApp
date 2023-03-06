@@ -8,6 +8,12 @@
 .navbar{
   display: flex;
   padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  align-items: center;
+  background-color: #030508;
+  z-index:1000 ;
+  
 }
 
 .navbar h1{
@@ -34,4 +40,130 @@ margin-right: auto;
 
 .center button{
   margin: 3rem;
+  font-size: 2rem;
+  padding: 0.4rem 1rem;
+  border-radius: 15px;
+  border: none;
+  background-color: rgb(51,150,255);
+  color: inherit;
+}
+
+.play_section{
+  display: flex;
+  gap: 2rem;
+  padding: 1rem 4rem;
+  margin-bottom: 5rem;
+}
+.play_section div{
+  width: 50%;
+ 
+ 
+}
+
+.player_top{
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  margin: 3rem 0 1rem 0;
+}
+.player_top h3{
+  font-size: 2rem;
+}
+
+.player_btn{
+  padding: 0.2rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  background-color: rgb(51,150,255);
+  color: antiquewhite;
+  font-weight: bold;
+  border: 1px solid #030508;
+
+}
+.picker{
+  padding: 0.2rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  background-color: rgb(51,150,255);
+  color: antiquewhite;
+  font-weight: bold;
+  border: 1px solid #030508;
+  margin-top: 1rem;
+  margin-left: 20%;
+
+}
+
+
+
+.enter_part{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3rem;
+}
+
+.enter_part button{
+  margin: 1rem;
+  font-size: 1.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: 10px;
+  border: none;
+  background-color: rgb(51,150,255);
+  color: antiquewhite;
+  border: 1px solid #030508;
+}
+
+.player{
+  border-top: 2px solid #030508;
+  padding: 0.2rem 0;
+  text-align: justify;
+  width: 70%;
+}
+
+.history{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.history_top{
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.history_top button{
+  padding: 0.2rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  background-color: rgb(51,150,255);
+  color: antiquewhite;
+  font-weight: bold;
+  border: 1px solid #030508;
+}
+
+
+.winner{
+  border-top: 2px solid #030508;
+  padding: 0.3rem 0;
+  text-align: justify;
+  width: 100%;
+}
+
+
+
+
+.footer{
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #ddd;
+  padding: 1rem 0;
+
+}
+
+.footer a{
+  margin-left: 15px;
 }
